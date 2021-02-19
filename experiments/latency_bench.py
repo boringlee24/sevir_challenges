@@ -21,6 +21,7 @@ from pathlib import Path
 import matplotlib
 matplotlib.use('Agg')
 import time
+import sys
 
 data_path="/scratch/li.baol/SEVIR"
 # Target locations of sample training & testing data
@@ -34,6 +35,11 @@ TRAIN_VAL_FRAC=0.8
 N_TEST=-1
 num_iters = 10000
 wait = True # set to False when measuring power, TODO
+
+#for i in range(num_iters):
+#    print(f'{i}/{num_iters} progress', end='\r', flush=True)
+#    time.sleep(0.1)
+#pdb.set_trace()
 
 with h5py.File(DEST_TEST_FILE,'r') as hf:
     Nr = N_TEST if N_TEST>=0 else hf['IN_vil'].shape[0]
@@ -67,12 +73,16 @@ time_record = []
 for i in range(num_iters):
     indexs = np.random.choice(len(X_test), batch_size, replace=False)
     x_test = X_test[indexs]
+    if len(x_test) != 8:
+        pdb.set_trace()
     t_start = time.time()
     unet.predict(x_test)
-    t_end = time.time() 
-    time_record.append(round((t_end - t_start)*1000,3)) # ms
+    t_end = time.time()
+    lat = round((t_end - t_start)*1000,3) 
+    time_record.append(lat) # ms
     if wait:
         time.sleep(0.1)
+        print(f'{i}/{num_iters} done, latency is {lat}ms', end='\r', flush=True)
 if wait:
     gpu = sys.argv[1]
     with open(f'logs/time_records/{gpu}.json', 'w') as fp:
