@@ -1,17 +1,14 @@
 #!/bin/bash
 #echo "run nvidia-smi command to monitor gpu power"
 
-JOB=$1  #"job1"
-GPU=$2
-TESTCASE=$3
-DATA_PATH="/scratch/li.baol/GPU_pwr_meas/tensorflow/job_runs/${TESTCASE}/"
+GPU="0"
+TYPE=$1
+DATA_PATH="logs"
+RUNTIME=300
 mkdir -p $DATA_PATH
 
-# step 1: start power measurement
-# step 2: after measurement done, process data, write to power.json
-# in main.py, check if the power exist, if yes, job qualified for promote
-
-nvidia-smi -i ${GPU} --query-gpu=index,timestamp,power.draw,memory.used,utilization.memory,utilization.gpu,temperature.gpu --format=csv,nounits -lms 100 --filename=${DATA_PATH}${JOB}.csv 
+sleep 60 
+timeout ${RUNTIME} nvidia-smi -i ${GPU} --query-gpu=index,timestamp,power.draw,memory.used,utilization.memory,utilization.gpu,temperature.gpu --format=csv,nounits -lms 50 --filename=${DATA_PATH}/${TYPE}.csv 
 
 #sleep 305 && python gpu_pwr.py $JOB
 

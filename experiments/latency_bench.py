@@ -22,6 +22,7 @@ import matplotlib
 matplotlib.use('Agg')
 import time
 import sys
+import json
 
 data_path="/scratch/li.baol/SEVIR"
 # Target locations of sample training & testing data
@@ -33,8 +34,7 @@ N_TRAIN=-1
 TRAIN_VAL_FRAC=0.8
 #set_trace()
 N_TEST=-1
-num_iters = 10000
-wait = True # set to False when measuring power, TODO
+num_iters = 2000
 
 #for i in range(num_iters):
 #    print(f'{i}/{num_iters} progress', end='\r', flush=True)
@@ -80,10 +80,8 @@ for i in range(num_iters):
     t_end = time.time()
     lat = round((t_end - t_start)*1000,3) 
     time_record.append(lat) # ms
-    if wait:
-        time.sleep(0.1)
-        print(f'{i}/{num_iters} done, latency is {lat}ms', end='\r', flush=True)
-if wait:
-    gpu = sys.argv[1]
-    with open(f'logs/time_records/{gpu}.json', 'w') as fp:
-        json.dump(time_record, fp, indent=4)
+    print(f'{i}/{num_iters} done, latency is {lat}ms', end='\r', flush=True)
+
+gpu = sys.argv[1]
+with open(f'logs/time_records/{gpu}.json', 'w') as fp:
+    json.dump(time_record, fp, indent=4)
