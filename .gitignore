@@ -1,6 +1,6 @@
 # don't want these checked in
 data/
-experiments/
+radar_nowcasting/experiments/
 logs/
 __pycache__/
 
