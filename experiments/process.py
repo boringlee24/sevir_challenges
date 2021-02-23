@@ -5,11 +5,14 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import pandas
+import sys
 
-gpus = ['k40m', 'k80', 'p100', 'v100']
-GPUs = ['K40m', 'K80', 'P100', 'V100']
+batch_size = sys.argv[1]
+gpus = ['cpu', 't4', 'p100', 'v100'] # cpu node is c0191
+GPUs = ['CPU', 'T4', 'P100', 'V100']
+#idle_pwr = [27, 60, 15]
 
-fig, axs = plt.subplots(1, 2, figsize=(8,3.5), gridspec_kw={'hspace': 0, 'wspace': 0.3, 'top': 0.9, 'left':0.08, 'right':0.99, 'bottom':0.08})
+fig, axs = plt.subplots(1, 3, figsize=(12,3.5), gridspec_kw={'hspace': 0, 'wspace': 0.3, 'top': 0.9, 'left':0.08, 'right':0.99, 'bottom':0.08})
 x = np.arange(len(gpus))
 width = 0.4
 
@@ -18,38 +21,52 @@ lat_list = []
 tail_list = []
 # first plot throughput across different gpus
 for i, gpu in enumerate(gpus):
-    path = f'logs/time_records/{gpu}.json'
+    if batch_size == '8':
+        path = f'logs/time_records/{gpu}.json'
+    else:
+         path = f'logs/time_records/{gpu}_{batch_size}.json'
+       
     with open(path) as f:
         lats = json.load(f)
+    lats = lats[5:]
     lat_mean = np.mean(lats)
     lat_list.append(lat_mean)
-    tail_list.append(np.percentile(lats,90))
+    tail_list.append(np.percentile(lats,95))
     qps = 1000 / lat_mean
     qps_list.append(qps)
 
 axs[0].bar(x, tail_list, width=width) #TODO
 axs[0].set_xticks(x)
 axs[0].set_xticklabels(GPUs)
-axs[0].set_title('inference throughput', fontsize=14)
-axs[0].set_ylabel('throughput\n(query-per-second)', fontsize=13)
+axs[0].set_title('inference tail latency', fontsize=14)
+axs[0].set_ylabel('tail latency\n(ms)', fontsize=13)
+
+axs[1].bar(x, qps_list, width=width) #TODO
+axs[1].set_xticks(x)
+axs[1].set_xticklabels(GPUs)
+axs[1].set_title('inference throughput', fontsize=14)
+axs[1].set_ylabel('throughput\n(query-per-second)', fontsize=13)
 
 energy_list = []
 column = ' power.draw [W]'
 for i, gpu in enumerate(gpus):
-    path = f'logs/{gpu}.csv'
-    df = pandas.read_csv(path)
-    pwr = np.mean(df[column]) #watt
+    if gpu == 'cpu':
+        pwr = 135
+    else:
+        path = f'logs/{gpu}_{batch_size}.csv'
+        df = pandas.read_csv(path)
+        pwr = np.mean(df[column]) #- idle_pwr[i] #watt
     time = lat_list[i]/1000 #second
     energy_list.append(pwr*time)
 
-axs[1].bar(x, energy_list, width)
-axs[1].set_xticks(x)
-axs[1].set_xticklabels(GPUs)
-axs[1].set_title('inference energy', fontsize=14)
-axs[1].set_ylabel('Energy (Joule)\nper query', fontsize=13)
+axs[2].bar(x, energy_list, width)
+axs[2].set_xticks(x)
+axs[2].set_xticklabels(GPUs)
+axs[2].set_title('inference energy', fontsize=14)
+axs[2].set_ylabel('Energy (Joule)\nper query', fontsize=13)
 
 for ax in axs:
     ax.grid(which='major', axis='y', ls='dotted')
 
-plt.savefig('plots/fig1.png')
+plt.savefig(f'plots/batch_{batch_size}.png')
 

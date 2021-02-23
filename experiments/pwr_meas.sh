@@ -4,7 +4,7 @@
 GPU="0"
 TYPE=$1
 DATA_PATH="logs"
-RUNTIME=300
+RUNTIME=180
 mkdir -p $DATA_PATH
 
 sleep 60 

@@ -34,8 +34,8 @@ N_TRAIN=-1
 TRAIN_VAL_FRAC=0.8
 #set_trace()
 N_TEST=-1
-num_iters = 2000
-
+num_iters = 1000
+batch_size = int(sys.argv[1])
 #for i in range(num_iters):
 #    print(f'{i}/{num_iters} progress', end='\r', flush=True)
 #    time.sleep(0.1)
@@ -62,19 +62,19 @@ params={
 unet = create_model(start_neurons=params['start_neurons'],activation=params['activation']) 
 unet.load_weights('logs/unet.hdf5')
 
-batch_size,batch_num=8,4
-bs,be=batch_size*batch_num,batch_size*(batch_num+1)
-x_test,y_test,meta = X_test[bs:be],Y_test[bs:be],testing_meta.iloc[bs:be]
-
-# warm up
-unet.predict(x_test)
+#batch_size,batch_num=8,0
+#bs,be=batch_size*batch_num,batch_size*(batch_num+1)
+#x_test,y_test,meta = X_test[bs:be],Y_test[bs:be],testing_meta.iloc[bs:be]
+#
+## warm up
+#unet.predict(x_test)
 time_record = []
 
 for i in range(num_iters):
     indexs = np.random.choice(len(X_test), batch_size, replace=False)
     x_test = X_test[indexs]
-    if len(x_test) != 8:
-        pdb.set_trace()
+#    if len(x_test) != 8:
+#        pdb.set_trace()
     t_start = time.time()
     unet.predict(x_test)
     t_end = time.time()
@@ -82,6 +82,6 @@ for i in range(num_iters):
     time_record.append(lat) # ms
     print(f'{i}/{num_iters} done, latency is {lat}ms', end='\r', flush=True)
 
-gpu = sys.argv[1]
+gpu = sys.argv[2]
 with open(f'logs/time_records/{gpu}.json', 'w') as fp:
     json.dump(time_record, fp, indent=4)
