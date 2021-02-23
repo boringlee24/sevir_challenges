@@ -8,8 +8,8 @@ import pandas
 import sys
 
 batch_size = sys.argv[1]
-gpus = ['cpu', 't4', 'p100', 'v100'] # cpu node is c0191
-GPUs = ['CPU', 'T4', 'P100', 'V100']
+gpus = ['t4', 'p100', 'v100'] # cpu node is c0191
+GPUs = ['T4', 'P100', 'V100']
 #idle_pwr = [27, 60, 15]
 
 fig, axs = plt.subplots(1, 3, figsize=(12,3.5), gridspec_kw={'hspace': 0, 'wspace': 0.3, 'top': 0.9, 'left':0.08, 'right':0.99, 'bottom':0.08})
@@ -35,10 +35,10 @@ for i, gpu in enumerate(gpus):
     qps = 1000 / lat_mean
     qps_list.append(qps)
 
-axs[0].bar(x, tail_list, width=width) #TODO
+axs[0].bar(x, lat_list, width=width) #TODO
 axs[0].set_xticks(x)
 axs[0].set_xticklabels(GPUs)
-axs[0].set_title('inference tail latency', fontsize=14)
+axs[0].set_title('inference mean latency', fontsize=14)
 axs[0].set_ylabel('tail latency\n(ms)', fontsize=13)
 
 axs[1].bar(x, qps_list, width=width) #TODO
