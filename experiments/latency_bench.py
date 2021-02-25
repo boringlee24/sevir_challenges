@@ -24,7 +24,7 @@ import time
 import sys
 import json
 
-data_path="/scratch/li.baol/SEVIR"
+data_path="."
 # Target locations of sample training & testing data
 DEST_TEST_FILE= os.path.join(data_path, 'data/processed/nowcast_testing_000.h5')
 DEST_TEST_META= os.path.join(data_path, 'data/processed/nowcast_testing_000_META.csv')

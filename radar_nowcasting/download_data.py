@@ -26,7 +26,7 @@ from IPython.display import Image
 #from unet_benchmark import nowcast_mae, nowcast_mse
 
 
-data_path="/scratch/li.baol/SEVIR"
+data_path="../experiments"
 # Target locations of sample training & testing data
 DEST_TRAIN_FILE= os.path.join(data_path,'data/processed/nowcast_training_000.h5')
 DEST_TRAIN_META=os.path.join(data_path, 'data/processed/nowcast_training_000_META.csv')
@@ -46,17 +46,17 @@ if not os.path.exists(DEST_TEST_FILE):
     bucket.download_file('data/processed/nowcast_testing_000.h5.tar.gz',DEST_TEST_FILE+'.tar.gz')
     bucket.download_file('data/processed/nowcast_testing_000_META.csv',DEST_TEST_META)
     with tarfile.open(DEST_TEST_FILE+'.tar.gz') as tfile:
-        tfile.extract('data/processed/nowcast_testing_000.h5','/scratch/li.baol/SEVIR')
+        tfile.extract('data/processed/nowcast_testing_000.h5','data/processed')
 else:
     print('Test file %s already exists' % DEST_TEST_FILE)
 
-print('Dowloading sample training data')
-if not os.path.exists(DEST_TRAIN_FILE):
-    bucket.download_file('data/processed/nowcast_training_000.h5.tar.gz',DEST_TRAIN_FILE+'.tar.gz')
-    bucket.download_file('data/processed/nowcast_training_000_META.csv',DEST_TRAIN_META)
-    with tarfile.open(DEST_TRAIN_FILE+'.tar.gz') as tfile:
-        tfile.extract('data/processed/nowcast_training_000.h5','/scratch/li.baol/SEVIR')
-else:
-    print('Train file %s already exists' % DEST_TRAIN_FILE)
+#print('Dowloading sample training data')
+#if not os.path.exists(DEST_TRAIN_FILE):
+#    bucket.download_file('data/processed/nowcast_training_000.h5.tar.gz',DEST_TRAIN_FILE+'.tar.gz')
+#    bucket.download_file('data/processed/nowcast_training_000_META.csv',DEST_TRAIN_META)
+#    with tarfile.open(DEST_TRAIN_FILE+'.tar.gz') as tfile:
+#        tfile.extract('data/processed/nowcast_training_000.h5','/scratch/li.baol/SEVIR')
+#else:
+#    print('Train file %s already exists' % DEST_TRAIN_FILE)
     
     
