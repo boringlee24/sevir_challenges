@@ -39,7 +39,7 @@ axs[0].bar(x, lat_list, width=width) #TODO
 axs[0].set_xticks(x)
 axs[0].set_xticklabels(GPUs)
 axs[0].set_title('inference mean latency', fontsize=14)
-axs[0].set_ylabel('tail latency\n(ms)', fontsize=13)
+axs[0].set_ylabel('latency\n(ms)', fontsize=13)
 
 axs[1].bar(x, qps_list, width=width) #TODO
 axs[1].set_xticks(x)
@@ -55,7 +55,9 @@ for i, gpu in enumerate(gpus):
     else:
         path = f'logs/{gpu}_{batch_size}.csv'
         df = pandas.read_csv(path)
-        pwr = np.mean(df[column]) #- idle_pwr[i] #watt
+#        pwr = np.mean(df[column]) #- idle_pwr[i] #watt
+        pwr = np.percentile(df[column], 90)
+
     time = lat_list[i]/1000 #second
     energy_list.append(pwr*time)
 
