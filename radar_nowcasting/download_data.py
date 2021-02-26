@@ -46,7 +46,7 @@ if not os.path.exists(DEST_TEST_FILE):
     bucket.download_file('data/processed/nowcast_testing_000.h5.tar.gz',DEST_TEST_FILE+'.tar.gz')
     bucket.download_file('data/processed/nowcast_testing_000_META.csv',DEST_TEST_META)
     with tarfile.open(DEST_TEST_FILE+'.tar.gz') as tfile:
-        tfile.extract('data/processed/nowcast_testing_000.h5','data/processed')
+        tfile.extract('data/processed/nowcast_testing_000.h5','../experiments')
 else:
     print('Test file %s already exists' % DEST_TEST_FILE)
 
