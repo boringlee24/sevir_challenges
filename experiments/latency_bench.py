@@ -23,6 +23,7 @@ matplotlib.use('Agg')
 import time
 import sys
 import json
+from pathlib import Path
 
 data_path="."
 # Target locations of sample training & testing data
@@ -83,5 +84,7 @@ for i in range(num_iters):
     print(f'{i}/{num_iters} done, latency is {lat}ms', end='\r', flush=True)
 
 gpu = sys.argv[2]
+
+Path('logs/time_records').mkdir(parents=True, exist_ok=True)
 with open(f'logs/time_records/{gpu}.json', 'w') as fp:
     json.dump(time_record, fp, indent=4)
