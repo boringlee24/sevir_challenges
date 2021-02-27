@@ -8,8 +8,8 @@ import pandas
 import sys
 
 batch_size = '10'
-gpus = ['m60', 't4a', 'v100d', 't4d', 'p100', 'v100a', 'v100m'] # cpu node is c0191
-GPUs = ['M60', 'T4A', 'V100D', 't4D', 'P100', 'V100A', 'v100M']
+gpus = ['t4d', 'p100', 'v100a'] # cpu node is c0191
+GPUs = ['t4D', 'P100', 'V100A']
 #idle_pwr = [27, 60, 15]
 
 fig, axs = plt.subplots(1, 3, figsize=(12,3.5), gridspec_kw={'hspace': 0, 'wspace': 0.3, 'top': 0.9, 'left':0.08, 'right':0.99, 'bottom':0.08})
@@ -35,17 +35,31 @@ for i, gpu in enumerate(gpus):
     qps = 1000 / lat_mean
     qps_list.append(qps)
 
-axs[0].bar(x, lat_list, width=width) #TODO
+def autolabel(rects,ax):
+    """
+    Attach a text label above each bar displaying its height
+    """
+    for rect in rects:
+        height = rect.get_height()
+#        pdb.set_trace()
+        ax.text(rect.get_x() + rect.get_width()/2., 1.01*height,
+                '%s' % round(height,2),
+                ha='center', va='bottom')
+
+
+rect = axs[0].bar(x, lat_list, width=width) #TODO
 axs[0].set_xticks(x)
 axs[0].set_xticklabels(GPUs)
 axs[0].set_title('inference mean latency', fontsize=14)
 axs[0].set_ylabel('latency\n(ms)', fontsize=13)
+autolabel(rect, axs[0])
 
-axs[1].bar(x, qps_list, width=width) #TODO
+rect = axs[1].bar(x, qps_list, width=width) #TODO
 axs[1].set_xticks(x)
 axs[1].set_xticklabels(GPUs)
 axs[1].set_title('inference throughput', fontsize=14)
 axs[1].set_ylabel('throughput\n(query-per-second)', fontsize=13)
+autolabel(rect, axs[1])
 
 energy_list = []
 column = ' power.draw [W]'
@@ -61,14 +75,16 @@ for i, gpu in enumerate(gpus):
     time = lat_list[i]/1000 #second
     energy_list.append(pwr*time)
 
-axs[2].bar(x, energy_list, width)
+rect = axs[2].bar(x, energy_list, width)
 axs[2].set_xticks(x)
 axs[2].set_xticklabels(GPUs)
 axs[2].set_title('inference energy', fontsize=14)
 axs[2].set_ylabel('Energy (Joule)\nper query', fontsize=13)
+autolabel(rect, axs[2])
 
 for ax in axs:
     ax.grid(which='major', axis='y', ls='dotted')
+
 
 plt.savefig(f'plots/batch_{batch_size}.png')
 
