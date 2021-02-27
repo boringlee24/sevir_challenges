@@ -7,9 +7,9 @@ import matplotlib.pyplot as plt
 import pandas
 import sys
 
-batch_size = sys.argv[1]
-gpus = ['t4', 'p100', 'v100'] # cpu node is c0191
-GPUs = ['T4', 'P100', 'V100']
+batch_size = '10'
+gpus = ['m60', 't4a', 'v100d', 't4d', 'p100', 'v100a', 'v100m'] # cpu node is c0191
+GPUs = ['M60', 'T4A', 'V100D', 't4D', 'P100', 'V100A', 'v100M']
 #idle_pwr = [27, 60, 15]
 
 fig, axs = plt.subplots(1, 3, figsize=(12,3.5), gridspec_kw={'hspace': 0, 'wspace': 0.3, 'top': 0.9, 'left':0.08, 'right':0.99, 'bottom':0.08})
@@ -56,7 +56,7 @@ for i, gpu in enumerate(gpus):
         path = f'logs/{gpu}_{batch_size}.csv'
         df = pandas.read_csv(path)
 #        pwr = np.mean(df[column]) #- idle_pwr[i] #watt
-        pwr = np.percentile(df[column], 90)
+        pwr = np.percentile(df[column], 90) #TODO
 
     time = lat_list[i]/1000 #second
     energy_list.append(pwr*time)

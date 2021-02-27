@@ -1,7 +1,8 @@
 # don't want these checked in
 data/
 radar_nowcasting/experiments/
-logs/
+logs/tboardlogs/
+
 __pycache__/
 
 # Data and logs
