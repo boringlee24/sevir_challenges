@@ -74,13 +74,13 @@ for i, gpu in enumerate(gpus):
         pwr = np.percentile(df[column], 90) #TODO
 
     time = lat_list[i]/1000 #second
-    energy_list.append(pwr*time)
+    energy_list.append(pwr)
 
 rect = axs[2].bar(x, energy_list, width)
 axs[2].set_xticks(x)
 axs[2].set_xticklabels(GPUs)
-axs[2].set_title('inference energy', fontsize=14)
-axs[2].set_ylabel('Energy (Joule)\nper query', fontsize=13)
+axs[2].set_title('inference power', fontsize=14)
+axs[2].set_ylabel('Power (Watt)', fontsize=13)
 autolabel(rect, axs[2])
 
 for ax in axs:
