@@ -9,8 +9,8 @@ import sys
 
 batch_size = '10'
 gpus = ['cpu', 'k80', 'm60', 't4d', 'p100', 'v100a'] # cpu node is c0191
-#GPUs = ['CPU', 't4D', 'P100', 'V100A']
-GPUs = gpus[:]
+GPUs = ['CPU', 'K80', 'M60', 'T4', 'P100', 'V100']
+#GPUs = gpus[:]
 #idle_pwr = [27, 60, 15]
 
 fig, axs = plt.subplots(1, 3, figsize=(12,3.5), gridspec_kw={'hspace': 0, 'wspace': 0.3, 'top': 0.9, 'left':0.08, 'right':0.99, 'bottom':0.08})
@@ -53,6 +53,7 @@ axs[0].set_xticks(x)
 axs[0].set_xticklabels(GPUs)
 axs[0].set_title('inference mean latency', fontsize=14)
 axs[0].set_ylabel('latency\n(ms)', fontsize=13)
+axs[0].set_ylim(0, max(lat_list) * 1.1)
 autolabel(rect, axs[0])
 
 rect = axs[1].bar(x, qps_list, width=width) #TODO
@@ -61,6 +62,7 @@ axs[1].set_xticklabels(GPUs)
 axs[1].set_title('inference throughput', fontsize=14)
 axs[1].set_ylabel('throughput\n(query-per-second)', fontsize=13)
 autolabel(rect, axs[1])
+axs[1].set_ylim(0, max(qps_list) * 1.1)
 
 energy_list = []
 column = ' power.draw [W]'
@@ -82,6 +84,7 @@ axs[2].set_xticklabels(GPUs)
 axs[2].set_title('inference power', fontsize=14)
 axs[2].set_ylabel('Power (Watt)', fontsize=13)
 autolabel(rect, axs[2])
+axs[2].set_ylim(0, max(energy_list) * 1.1)
 
 for ax in axs:
     ax.grid(which='major', axis='y', ls='dotted')
